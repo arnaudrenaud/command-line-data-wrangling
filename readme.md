@@ -1,19 +1,25 @@
 
 # Unix command-line tools: groove on your data like it's 1971
 
-#### OS X et Linux :
-* Les outils Unix standard sont installés par défaut et accessibles dans le terminal
+### Get the data: 
+* https://drive.google.com/file/d/0B4bLNvQWJ3-9dmc0M0w1dHVMbkE/view?usp=sharing
+
+### Get the command-line tools:
+
+#### OS X and Linux :
+* Already installed, just open a terminal
 
 #### Windows :
-* Installer  (inclus avec Git) : https://msysgit.github.io 
-* Lancer Git Bash (rechercher `git bash` dans le menu Démarrer)
+* Install Gow : https://github.com/bmatzelle/gow/wiki
+* Open the Command Prompt (search `cmd.exe` from the Start menu)
 
-## Commandes de base
+## 1. Navigate between directories
 
 ### `pwd` (*print working directory*)
 
+Where are we? Let's print the current working directory:
 
-    # Afficher le chemin du répertoire courant
+
     !pwd
 
     /Users/arnaudrenaudfullsix/Google Drive/command-line-basics
@@ -21,8 +27,7 @@
 
 ### <code>cd</code> (<i>change directory</i>)
 
-
-    # Changer de répertoire courant en se plaçant dans le sous-répertoire wikipedia_dataset
+Now let's change our working directory to the one that contains the data:
 
 
     cd wikipedia_dataset
@@ -32,33 +37,36 @@
 
 ### <code>ls</code> (<i>list directory contents</i>)
 
+This command prints the list of the files and directories contained in the current working directory:
 
-    # Afficher les fichiers et les sous-répertoires du répertoire courant
+
     !ls
 
     doi_and_pubmed_citations.enwiki_20150112.tsv doi_isbn_and_pubmed.enwiki_20150205.tsv
     doi_and_pubmed_citations.enwiki_20150205.tsv pubmed_citations.enwiki_20150112.tsv
 
 
+Same thing in detail below:
 
-    # Même chose avec des informations supplémentaires
+
     !ls -l
 
     total 962392
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101337899 Feb  9 18:29 doi_and_pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101763529 Mar  9 17:02 doi_and_pubmed_citations.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  252046963 Apr  6 18:03 doi_isbn_and_pubmed.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff   37589923 Feb  3 01:28 pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337899 Feb  9 17:29 doi_and_pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Mar  9 16:02 doi_and_pubmed_citations.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046963 Apr  6 18:03 doi_isbn_and_pubmed.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Feb  3 00:28 pubmed_citations.enwiki_20150112.tsv
 
 
 There are four files. Let's take a quick look at what's inside.
 
-## Commandes de manipulation de données
+## 2. Actual data manipulation commands
 
-### <code>head</code> et <code>tail</code>
+### <code>head</code> and <code>tail</code>
+
+`head` is going to print the first ten lines of the specified file:
 
 
-    # Afficher les 10 premières lignes d'un fichier
     !head doi_and_pubmed_citations.enwiki_20150112.tsv
 
     page_id	page_title	rev_id	timestamp	type	id
@@ -73,10 +81,9 @@ There are four files. Let's take a quick look at what's inside.
     1081285	Point set triangulation	560066307	2013-06-15T20:38:51Z	doi	10.1109/SFCS.1991.185400
 
 
-We can see the first row has six columns (`page_id`, `page_title`, `rev_id`, `timestamp`, `type` and `id`) and nine rows of data below.
+Similarly, we can print the last ten lines with `tail`:
 
 
-    # Afficher les 10 dernières lignes d'un fichier
     !tail doi_and_pubmed_citations.enwiki_20150112.tsv
 
     892865	Essential thrombocythaemia	608184756	2014-05-12T06:44:17Z	pmid	23668666
@@ -93,15 +100,17 @@ We can see the first row has six columns (`page_id`, `page_title`, `rev_id`, `ti
 
 ### <code>wc</code> (<i>word, line, character, and byte count</i>)
 
+Count the number of lines in a file (without providing the option `-l`, `wc` will not only count lines, but also words and characters):
 
-    # Compter et afficher le nombre de lignes d'un fichier
+
     !wc -l doi_and_pubmed_citations.enwiki_20150112.tsv
 
      1291573 doi_and_pubmed_citations.enwiki_20150112.tsv
 
 
+Using a wildcard, it is possible to apply a command to multiple files (here, `*` will match all the files in the working directory):
 
-    # Compter et afficher le nombre de lignes de chaque fichier .tsv
+
     !wc -l *
 
      1291573 doi_and_pubmed_citations.enwiki_20150112.tsv
@@ -111,8 +120,9 @@ We can see the first row has six columns (`page_id`, `page_title`, `rev_id`, `ti
      6410208 total
 
 
+The same wildcard syntax can be applied to `head`. This will print the head of all the TSV files in the working directory:
 
-    # Afficher les 10 premières lignes de chaque fichier .tsv
+
     !head *.tsv
 
     ==> doi_and_pubmed_citations.enwiki_20150112.tsv <==
@@ -166,34 +176,39 @@ We can see the first row has six columns (`page_id`, `page_title`, `rev_id`, `ti
 
 All four files have the same columns, including a `timestamp` column.
 
-**Let's extract the year from the timestamp and split the data into as many files as there are years.**
+**Let's extract the year from the timestamp and split the data into as many files as there are years. We will first concatenate all files into one before splitting it into distinct years.**
 
 ### <code>sed</code> (<i>stream editor</i>)
 
+Before concatenating the files, let's remove their header:
 
-    # Supprimer l'en-tête des fichiers .tsv ('1d' = "delete line number 1", '-i' = "in-place")
 
-
-    # Unix (écrire une copie des fichiers originaux en leur ajoutant l'extension .original
+    # On Linux or OS X
     !sed -i '.original' '1d' *.tsv
 
+`1d` stands for "delete line number 1", `-i` for "in-place". The arbitrary `.original` extension is appended to the original files.
 
-    # Windows (il n'est pas possible de spécifier un nom pour la copie des fichiers originaux)
+
+    # On Windows (not possible to specify a specific filename to append to the copies of the original files)
     !sed -i "1d" *.tsv
+
+Let's check the list of the files in our working directory:
 
 
     !ls -l
 
     total 1924784
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337855 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101337899 Feb  9 18:29 doi_and_pubmed_citations.enwiki_20150112.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101763529 Mar  9 17:02 doi_and_pubmed_citations.enwiki_20150205.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046964 Apr 10 16:03 doi_isbn_and_pubmed.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  252046963 Apr  6 18:03 doi_isbn_and_pubmed.enwiki_20150205.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Apr 10 16:03 pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff   37589923 Feb  3 01:28 pubmed_citations.enwiki_20150112.tsv.original
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337855 Apr 10 18:05 doi_and_pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337899 Feb  9 17:29 doi_and_pubmed_citations.enwiki_20150112.tsv.original
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Apr 10 18:05 doi_and_pubmed_citations.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Mar  9 16:02 doi_and_pubmed_citations.enwiki_20150205.tsv.original
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046964 Apr 10 18:05 doi_isbn_and_pubmed.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046963 Apr  6 18:03 doi_isbn_and_pubmed.enwiki_20150205.tsv.original
+    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Apr 10 18:05 pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Feb  3 00:28 pubmed_citations.enwiki_20150112.tsv.original
 
+
+We can notice the first row has been removed from this file:
 
 
     !head doi_and_pubmed_citations.enwiki_20150112.tsv
@@ -212,40 +227,73 @@ All four files have the same columns, including a `timestamp` column.
 
 ### <code>cat</code> (<i>concatenate and print files</i>)
 
+Let's concatenate all our TSV files into one:
 
-    # Concaténer les fichiers .tsv et écrire le résultat dans le fichier all_logs.tsv
+
     !cat *.tsv > all_doi_and_pubmed_citations.tsv
+
+This is it. We can check the list of the TSV files and notice the newly created `all_doi_and_pubmed_citations.tsv` weighs indeed the same as the sum of the other files:
 
 
     !ls -l *.tsv
 
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  492738271 Apr 10 16:03 all_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337855 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150205.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046964 Apr 10 16:03 doi_isbn_and_pubmed.enwiki_20150205.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Apr 10 16:03 pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  492738271 Apr 10 18:06 all_doi_and_pubmed_citations.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337855 Apr 10 18:05 doi_and_pubmed_citations.enwiki_20150112.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Apr 10 18:05 doi_and_pubmed_citations.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046964 Apr 10 18:05 doi_isbn_and_pubmed.enwiki_20150205.tsv
+    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Apr 10 18:05 pubmed_citations.enwiki_20150112.tsv
 
+
+We now need to add a column containing the year of each record, based on the timestamp.
 
 ### <code>cut</code> (<i>cut out selected portions of each line of a file</i>)
 
+Extracting the year and writing it as a column is going to take three steps:
+- first, let's get the fourth column of our concatenated table (which is the `timestamp` column)
+- then, let's pipe this result into `grep`, which will extract the year from the timestamp
+- finally, we direct the result to a file that we call `years.txt`
 
-    # Sélectionner la colonne de la date à chaque ligne (cut) et en extraire l'année (les quatres premiers chiffres) (grep -o) 
-    # Ecrire les années dans un fichier à part
 
-
-    # Unix
+    # On Linux or OS X (extended regular expression)
     !cut -f4 all_doi_and_pubmed_citations.tsv | grep -E -o ^[0-9]{4} > years.txt
 
 
-    # Windows (basic regular expressions)
+    # On Windows (basic regular expression)
     !cut -f4 all_doi_and_pubmed_citations.tsv | grep -o ^[0-9]\{4\} > years.txt
+
+What does this `years.txt` file look like? 
+
+
+    !head years.txt
+
+    2014
+    2008
+    2012
+    2008
+    2008
+    2014
+    2012
+    2012
+    2013
+    2014
+
+
+
+    !wc -l years.txt all_doi_and_pubmed_citations.tsv
+
+     6410205 years.txt
+     6410208 all_doi_and_pubmed_citations.tsv
+     12820413 total
+
+
+Looks good. Each line contains a year and there appears to be as many lines as in the complete dataset.
 
 ### `sort` (*sort lines of text files*)
 ### `uniq` (*report or filter out repeated lines in a file*)
 
+Before splitting our dataset into years, let's digress and check the years in presence in the dataset. The `uniq` command is quite self-explanatory; it only need a sorted file to drop all duplicates.
 
-    # Vérifier que le fichier years.txt contient des valeurs appropriées
-    # (Afin d'obtenir les valeurs uniques (uniq), les valeurs doivent être triées (sort))
+
     !sort years.txt | uniq
 
     2001
@@ -265,12 +313,18 @@ All four files have the same columns, including a `timestamp` column.
     2015
 
 
+Back to work now.
 
-    # Coller la colonne des années avec le fichier de données, écrire le résultat dans un fichier à part
+### `paste` (*merge corresponding or subsequent lines of files*)
+
+Let's add the columns containing the years to our dataset (just like pasting a column in a spreadsheet, only writing it to a new file):
+
+
     !paste years.txt all_doi_and_pubmed_citations.tsv > years_all_doi_and_pubmed_citations.tsv
 
+What does this newly created file look like?
 
-    # Afficher les premières lignes du fichier pour vérifier que la colonne des années a été correctement ajoutée
+
     !head years_all_doi_and_pubmed_citations.tsv
 
     2014	1015863	Contingent valuation	609087410	2014-05-18T12:33:42Z	doi	10.1257/jep.8.4.45
@@ -287,9 +341,10 @@ All four files have the same columns, including a `timestamp` column.
 
 ### <code>awk</code> (<i>pattern-directed scanning and processing language</i>)
 
+We're all set to split the dataset into as many files as there are distinct years.
+Let's prefix each output file with the corresponding year.
 
-    # Scinder les données dans autant de fichiers que d'années
-    # ('$1' est la colonne numéro 1, qui contient les années)
+We also need to indicate to the command `awk` which separator it needs to look for in our file (here, `\t`).
 
 
     # Unix
@@ -299,8 +354,11 @@ All four files have the same columns, including a `timestamp` column.
     # Windows (replacing single quotes by double quotes and escaping double quotes)
     !awk -F "\t" "{output=$1\"_doi_and_pubmed_citations.tsv\"; print $0 > output}" years_all_doi_and_pubmed_citations.tsv
 
+Slick one-liner and a powerful command. `$1` means we're splitting the file based on the value found in the first column (the year).
 
-    # Vérifier que chaque année a son fichier
+We can now make sure each distinct year has its own file:
+
+
     !ls -l *.tsv
 
     -rw-r--r--  1 arnaudrenaudfullsix  staff        289 Apr 10 16:24 2001_doi_and_pubmed_citations.tsv
@@ -329,8 +387,9 @@ All four files have the same columns, including a `timestamp` column.
 
 ### <code>grep</code> (<i>globally search regular expression and print</i>)
 
+What about looking for all records that match a certain pattern? We want to print all the records containing "Serbia" from the 2012 dataset.
 
-    # Search and print lines containing "Serbia" from file "2012_doi_and_pubmed_citations.tsv"
+
     !grep Serbia 2012_doi_and_pubmed_citations.tsv
 
     2012	4478927	White Serbia	505988534	2012-08-06T00:17:15Z	doi	10.2307/2841974
@@ -489,9 +548,9 @@ All four files have the same columns, including a `timestamp` column.
     2012	526399	Republic of Serbian Krajina	542273823	2013-03-05T22:20:11Z	isbn	0253346568
 
 
+We might as well search records about France or England (case-insensitive this time) in the whole dataset and write the results into a new file.
 
-    # Search lines containing "France" or "England" (ignoring case) from file "all_doi_and_pubmed_citations.tsv"
-    # Printing the result in a separate file
+
     !grep -i -e France -e England all_doi_and_pubmed_citations.tsv > france_england_citations.tsv
 
 
@@ -499,40 +558,3 @@ All four files have the same columns, including a `timestamp` column.
 
         7835 france_england_citations.tsv
 
-
-
-    !ls -l
-
-    total 5001096
-    -rw-r--r--  1 arnaudrenaudfullsix  staff        289 Apr 10 16:24 2001_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff      33127 Apr 10 16:24 2002_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff     186850 Apr 10 16:24 2003_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff     858487 Apr 10 16:24 2004_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff    3103338 Apr 10 16:24 2005_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff    9323519 Apr 10 16:24 2006_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   56274704 Apr 10 16:24 2007_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   62579395 Apr 10 16:24 2008_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   58793636 Apr 10 16:24 2009_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   73809600 Apr 10 16:24 2010_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   56291954 Apr 10 16:24 2011_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   56779735 Apr 10 16:24 2012_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   63142523 Apr 10 16:24 2013_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   78538096 Apr 10 16:24 2014_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff    5073825 Apr 10 16:24 2015_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff        221 Apr 10 16:24 _doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  492738271 Apr 10 16:03 all_doi_and_pubmed_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101337855 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101337899 Feb  9 18:29 doi_and_pubmed_citations.enwiki_20150112.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  101763529 Apr 10 16:03 doi_and_pubmed_citations.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  101763529 Mar  9 17:02 doi_and_pubmed_citations.enwiki_20150205.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  252046964 Apr 10 16:03 doi_isbn_and_pubmed.enwiki_20150205.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff  252046963 Apr  6 18:03 doi_isbn_and_pubmed.enwiki_20150205.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff     663328 Apr 10 16:26 france_england_citations.tsv
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   37589923 Apr 10 16:03 pubmed_citations.enwiki_20150112.tsv
-    -rw-r--r--@ 1 arnaudrenaudfullsix  staff   37589923 Feb  3 01:28 pubmed_citations.enwiki_20150112.tsv.original
-    -rw-r--r--  1 arnaudrenaudfullsix  staff   32051025 Apr 10 16:15 years.txt
-    -rw-r--r--  1 arnaudrenaudfullsix  staff  524789299 Apr 10 16:22 years_all_doi_and_pubmed_citations.tsv
-
-
-
-    
