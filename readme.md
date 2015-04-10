@@ -254,6 +254,7 @@ Extracting the year and writing it as a column is going to take three steps:
 - finally, we direct the result to a file that we call `years.txt`
 
 
+
     # On Linux or OS X (extended regular expression)
     !cut -f4 all_doi_and_pubmed_citations.tsv | grep -E -o ^[0-9]{4} > years.txt
 
