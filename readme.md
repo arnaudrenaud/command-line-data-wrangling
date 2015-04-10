@@ -176,7 +176,7 @@ The same wildcard syntax can be applied to `head`. This will print the head of a
 
 All four files have the same columns, including a `timestamp` column.
 
-**Let's extract the year from the timestamp and split the data into as many files as there are years. We will first concatenate all files into one before splitting it into distinct years.**
+**Let's extract the year from the timestamp and spread the data across as many files as there are years. We will first concatenate all files into one before splitting the records into distinct years.**
 
 ### <code>sed</code> (<i>stream editor</i>)
 
@@ -189,7 +189,7 @@ Before concatenating the files, let's remove their header:
 `1d` stands for "delete line number 1", `-i` for "in-place". The arbitrary `.original` extension is appended to the original files.
 
 
-    # On Windows (not possible to specify a specific filename to append to the copies of the original files)
+    # On Windows (not possible to specify a specific pattern to append to the original filenames)
     !sed -i "1d" *.tsv
 
 Let's check the list of the files in our working directory:
@@ -232,7 +232,7 @@ Let's concatenate all our TSV files into one:
 
     !cat *.tsv > all_doi_and_pubmed_citations.tsv
 
-This is it. We can check the list of the TSV files and notice the newly created `all_doi_and_pubmed_citations.tsv` weighs indeed the same as the sum of the other files:
+This is it. We can check the list of the TSV files and notice that the newly created `all_doi_and_pubmed_citations.tsv` weighs indeed the same as the sum of the other files:
 
 
     !ls -l *.tsv
@@ -250,7 +250,7 @@ We now need to add a column containing the year of each record, based on the tim
 
 Extracting the year and writing it as a column is going to take three steps:
 - first, let's get the fourth column of our concatenated table (which is the `timestamp` column)
-- then, let's pipe this result into `grep`, which will extract the year from the timestamp
+- then, let's hand the result to `grep`, which will extract the year from the timestamp
 - finally, we direct the result to a file that we call `years.txt`
 
 It still fits in one line, though:
@@ -293,7 +293,7 @@ Looks good. Each line contains a year and there appears to be as many lines as i
 ### `sort` (*sort lines of text files*)
 ### `uniq` (*report or filter out repeated lines in a file*)
 
-Before splitting our dataset into years, let's digress and check the years in presence in the dataset. The `uniq` command is quite self-explanatory; it only need a sorted file to drop all duplicates.
+Before splitting our dataset into years, let's digress and check the years in presence in the dataset. The `uniq` command is quite self-explanatory; it only needs a sorted file to drop all duplicates.
 
 
     !sort years.txt | uniq
@@ -319,7 +319,7 @@ Back to work now.
 
 ### `paste` (*merge corresponding or subsequent lines of files*)
 
-Let's add the columns containing the years to our dataset (just like pasting a column in a spreadsheet, only writing it to a new file):
+Let's add the column of the years to our dataset (just like pasting a column in a spreadsheet, only writing it to a new file):
 
 
     !paste years.txt all_doi_and_pubmed_citations.tsv > years_all_doi_and_pubmed_citations.tsv
