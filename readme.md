@@ -253,6 +253,7 @@ Extracting the year and writing it as a column is going to take three steps:
 - then, let's pipe this result into `grep`, which will extract the year from the timestamp
 - finally, we direct the result to a file that we call `years.txt`
 
+It still fits in one line, though:
 
 
     # On Linux or OS X (extended regular expression)
