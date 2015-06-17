@@ -1,7 +1,7 @@
 
-# Unix command-line tools: groove on your data like it's 1971
+# Unix command-line tools: dance with your data like it's 1971
 
-### Get the data: 
+### Get the exercise dataset: 
 * https://drive.google.com/file/d/0B4bLNvQWJ3-9dmc0M0w1dHVMbkE/view?usp=sharing
 
 ### Get the command-line tools:
