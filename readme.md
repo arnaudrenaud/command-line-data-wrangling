@@ -1,8 +1,9 @@
 # Unix command-line tools: dance with your data like it's 1971
 
-Not having to read a file entirely in memory can be crucial to work on huge CSV files.
-This is where Unix commands come in handy since they process a file as a stream in memory instead of saturating it with an entire file at once.
+How do you crunch large data locally on your computer if it doesn't fit in memory?
 
-This tutorial is aimed at beginners with the Unix commands.
+That's where a few classic Unix commands can come in handy as they stream files through memory instead of trying to fit entire files into memory.
+
+This tutorial is aimed at command-line-tools beginners.
 
 [Read the tutorial here](tutorial.ipynb)
