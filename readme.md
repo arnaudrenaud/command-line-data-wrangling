@@ -4,5 +4,5 @@ How do you crunch large data on your computer if they don't fit in memory?
 
 One way is to rely on Unix command-line tools that handle text streams instead of trying to fit entire files into memory.
 
-This tutorial is aimed at command-line-tools beginners.
+This tutorial is aimed at beginners with command-line tools.
 [Read the tutorial here](tutorial.ipynb)
